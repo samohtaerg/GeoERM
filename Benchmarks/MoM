@@ -1,0 +1,39 @@
+## Method-of-moments
+def MoM(data, r):
+    T = len(data)
+    n = np.array([x.shape[0] for (x,y) in data])
+    p = data[0][0].shape[1]
+    n_total = np.sum(n)
+
+    ## initialization
+    x = np.zeros((n_total, p))
+    y = np.zeros(n_total)
+
+    # calculate sample indices for each task
+    task_range = []
+    start_index = 0
+    for t in range(T):
+        task_range.append(range(start_index, start_index+n[t]))
+        start_index += n[t]
+
+    # stack the x and y arrays
+    for t in range(T):
+        x[task_range[t], :] = data[t][0]
+        y[task_range[t]] = data[t][1]
+
+    M = (x.T @ np.diag(y**2) @ x)/n_total
+
+    # SVD
+    A_hat = np.linalg.svd(M)[0][:, 0:r]
+
+    # calculate the theta estimate based on A_hat
+    theta_hat = np.zeros((r, T))
+    for t in range(T):
+        theta_hat[:, t] = LinearRegression(fit_intercept = False).fit(x[task_range[t], :] @ A_hat, y[task_range[t]]).coef_
+
+    # calculate the estimate of coef
+    beta_hat = np.zeros((p, T))
+    for t in range(T):
+        beta_hat[:, t] = A_hat @ theta_hat[:, t]
+
+    return(beta_hat)
