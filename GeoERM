@@ -1,4 +1,4 @@
-## penalized GeoERM
+## GeoERM
 def GeoERM(data, r = 3, T1 = 1, T2 = 1, R = None, r_bar = None, lr = 0.01, max_iter = 20, C1 = 1, C2 = 1,
             delta = 0.05, adaptive = False, info = False, tol = 1e-6, link = 'linear'):
     if info:
