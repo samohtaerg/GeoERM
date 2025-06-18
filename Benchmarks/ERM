@@ -1,0 +1,87 @@
+## ERM (the same representation across tasks)
+def ERM(data, r, eta = 0.05, delta = 0.05, max_iter = 2000, lr = 0.01, info = False, tol = 1e-6, link = 'linear'):
+    if info:
+        print("ERM starts running...", flush = True)
+
+    T = len(data)
+    n = np.array([x.shape[0] for (x,y) in data])
+    p = data[0][0].shape[1]
+    n_total = np.sum(n)
+
+    ## initialization
+    x = np.zeros((n_total, p))
+    y = np.zeros(n_total)
+
+    # calculate sample indices for each task
+    task_range = []
+    start_index = 0
+    for t in range(T):
+        task_range.append(range(start_index, start_index+n[t]))
+        start_index += n[t]
+
+    # stack the x and y arrays
+    for t in range(T):
+        x[task_range[t], :] = data[t][0]
+        y[task_range[t]] = data[t][1]
+
+
+    y = torch.tensor(y, requires_grad=False)
+    x = torch.tensor(x, requires_grad=False)
+    A_hat = np.zeros((p, r), dtype ='float64')
+    for t in range(T):
+        A_hat[0:r, 0:r] = np.identity(r)
+
+    # transform arrays to tensors
+    A_hat = torch.tensor(A_hat, requires_grad=True)
+    theta_hat = torch.zeros(r, T, requires_grad=True, dtype=torch.float64)
+
+    if link == 'linear':
+        def ftotal(A, theta):
+            s = 0
+            for t in range(T):
+                s = s + 1/(2*n_total)*torch.dot(y[task_range[t]] - x[task_range[t], :] @ A @ theta[:, t], y[task_range[t]] - x[task_range[t], :] @ A @ theta[:, t])
+            return(s)
+    elif link == 'logistic':
+        def ftotal(A, theta):
+            s = 0
+            for t in range(T):
+                logits = torch.matmul(x[task_range[t], :], A @ theta[:, t])
+                s = s + 1/n_total*torch.dot(1-y[task_range[t]], logits) + 1/n_total*torch.sum(torch.log(1+torch.exp(-logits)))
+
+            return(s)
+
+    optimizer = optim.Adam([A_hat, theta_hat], lr=lr)
+    loss_last = 1e8
+    for i in range(max_iter):
+        # Zero the gradients
+        optimizer.zero_grad()
+
+        # Compute the loss (sum of the largest singular values)
+        loss = ftotal(A_hat, theta_hat)
+
+        # Backward pass to compute gradients
+        loss.backward()
+
+        # Update the matrices
+        optimizer.step()
+
+        # Print the loss every 100 iterations
+        if info:
+            if (i + 1) % 100 == 0:
+                print("Iteration {}/{}, Loss: {}".format(i+1, max_iter, loss.item()), flush = True)
+
+        if abs(loss_last-loss.item())/loss.item() <= tol:
+            if info:
+                print("Already converged. Stopped early.", flush = True)
+            break
+        loss_last = loss.item()
+
+    beta_hat = torch.zeros(p, T, dtype=torch.float64)
+    for t in range(T):
+        beta_hat[:, t] = A_hat @ theta_hat[:, t]
+
+    beta_hat = beta_hat.detach().numpy()
+    if info:
+        print("ERM stops running...", flush = True)
+
+    return(beta_hat)
