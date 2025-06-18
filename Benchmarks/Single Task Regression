@@ -1,0 +1,12 @@
+## Single-task regression
+def single_task_LR(data, link = 'linear'):
+    T = len(data)
+    p = data[0][0].shape[1]
+    beta_hat = np.zeros((p, T))
+    if link == 'linear':
+        for t in range(T):
+            beta_hat[:, t] = LinearRegression(fit_intercept = False).fit(data[t][0], data[t][1]).coef_
+    elif link == 'logistic':
+        for t in range(T):
+            beta_hat[:, t] = LogisticRegression(fit_intercept = False).fit(data[t][0], data[t][1]).coef_
+    return(beta_hat)
