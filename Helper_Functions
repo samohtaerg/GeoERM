@@ -1,0 +1,42 @@
+def R(X):
+    Q, _ = torch.qr(X)
+    return Q
+
+def polar_retraction(X):
+    U, _, Vt = torch.linalg.svd(X, full_matrices=False)
+    return U @ Vt
+
+# Orthogonal Projection1
+def Proj(X, U):
+    print(X.shape)
+    print(U.shape)
+    return U - X @ (X.T @ U + U.T @ X) / 2
+
+# Orthogonal Projection2
+def projection(X, U):
+    # X^T * U
+    XtU = torch.matmul(X.transpose(-2, -1), U)
+    symXtU = (XtU + XtU.transpose(-2, -1)) / 2
+
+    # Projection: U - X * symXtU
+    Up = U - torch.matmul(X, symXtU)
+    return Up
+
+def column_norm(A):
+    norm_A = np.zeros(A.shape[1])
+    for j in range(A.shape[1]):
+        norm_A[j] = np.linalg.norm(A[:, j])
+    return(norm_A)
+
+def initialize_stiefel_matrix(p, r):
+    random_matrix = np.random.randn(p, r)
+    Q, _ = np.linalg.qr(random_matrix)
+    return Q[:, :r]
+
+def initialize_stiefel_tensor(T, p, r):
+    A_hat = np.zeros((T, p, r))
+    for t in range(T):
+        random_matrix = np.random.randn(p, r)
+        Q, _ = np.linalg.qr(random_matrix)
+        A_hat[t] = Q[:, :r]
+    return A_hat
