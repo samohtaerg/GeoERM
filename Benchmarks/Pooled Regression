@@ -1,0 +1,56 @@
+## Pooled regression
+def pooled_LR(data, link = 'linear'):
+    T = len(data)
+    p = data[0][0].shape[1]
+    x_all = np.empty((0, p))
+    y_all = np.empty(0)
+    for (x, y) in data:
+        x_all = np.concatenate((x_all, x))
+        y_all = np.concatenate((y_all, y))
+
+    beta_hat = np.zeros((p, T))
+    if link == 'linear':
+        beta_fit = LinearRegression(fit_intercept = False).fit(x_all, y_all).coef_
+    elif link == 'logistic':
+        beta_fit = LogisticRegression(fit_intercept = False).fit(x_all, y_all).coef_
+
+    for t in range(T):
+        beta_hat[:, t] = beta_fit
+    return(beta_hat)
+
+
+## Estimation of r (Algorithm 3)
+def select_r(data, T1 = 0.5, T2 = 0.25, R = None, r_bar = None, q = 0.05, epsilon_bar = 0.05, link = 'linear'):
+    n = np.array([x.shape[0] for (x,y) in data])
+    T = len(data)
+    p = data[0][0].shape[1]
+    beta_hat_single_task = np.zeros((p, T))
+    # var_est = np.zeros(T)
+    if link == 'linear':
+        for t in range(T):
+            beta_hat_single_task[:, t] = LinearRegression(fit_intercept = False).fit(data[t][0], data[t][1]).coef_
+    elif link == 'logistic':
+        for t in range(T):
+            beta_hat_single_task[:, t] = LogisticRegression(fit_intercept = False).fit(data[t][0], data[t][1]).coef_
+
+    norm_each_task = column_norm(beta_hat_single_task)
+    if R is None:
+        R = np.quantile(norm_each_task, q)
+
+    for t in range(T):
+        if (norm_each_task[t] > R):
+            beta_hat_single_task[:, t] = beta_hat_single_task[:, t]/norm_each_task[t]*R
+
+    # set up threshold
+    if r_bar is None:
+        r_bar = p
+    threshold = T1*np.sqrt((p+np.log(T))/np.max(n)) + T2*R*np.sqrt(epsilon_bar)
+    sigval = np.linalg.svd(beta_hat_single_task/np.sqrt(T))[1]
+    if len(np.where(sigval > threshold)[0]) > 0:
+        r = max(np.where(sigval > threshold)[0])+1
+        print('Threshold = ' + str(threshold) + ', selected r = ' + str(r))
+        return(r)
+    else:
+        print('No r is selected. Too large threshold.')
+        return(None)
+
