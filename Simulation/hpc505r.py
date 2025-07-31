@@ -116,14 +116,6 @@ def main_execution_function(n_tasks=50, n_samples=100, n_features=50, r_list=[3,
 """# 9 Models Linear Result
 
 """
-
-# Checklist
-# max_iter = 2000 (2000)
-# n_samples = 100 (unchanged)
-# Task = 50 (50)
-# n_features = 50 (50)
-#r_list=[5, 10, 15, 20, 25, 30]
-#dir
 if __name__ == "__main__":
     models = ['GeoERM', 'pERM', 'ERM', 'single_task_LR', 'pooled_LR', 'spectral', 'MoM', 'AdaptRep', 'GLasso']
     logging.basicConfig(level=logging.INFO)
