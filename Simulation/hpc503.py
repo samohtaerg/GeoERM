@@ -1237,7 +1237,7 @@ def main_execution_function(n_tasks=50, n_samples=100, n_features=50, r=3, epsil
     import json
     import sys
 
-    output_dir = '/scratch/ac10374/hpc503/'
+    output_dir = ''
     os.makedirs(output_dir, exist_ok=True)
 
     task_id = os.environ.get("SLURM_ARRAY_TASK_ID", "0")  # 
@@ -1263,17 +1263,6 @@ def main_execution_function(n_tasks=50, n_samples=100, n_features=50, r=3, epsil
 """# 9 Models Linear Result
 
 """
-
-# Checklist
-# max_iter = 2000 (2000)
-# list = (0.1, 0.9) (0.1 - 0.9)
-# Iteration = 25 (10 - 100)
-# n_samples = 100 (unchanged)
-# Task = 50 (50)
-# n_features = 20 (50)
-# r = 5 （5）
-# epsilon = 0.1 (0.1)
-
 if __name__ == "__main__":
     models = ['GeoERM', 'pERM', 'ERM', 'single_task_LR', 'pooled_LR', 'spectral', 'MoM', 'AdaptRep', 'GLasso']
     logging.basicConfig(level=logging.INFO)
