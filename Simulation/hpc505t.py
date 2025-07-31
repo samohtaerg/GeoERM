@@ -107,7 +107,7 @@ def main_execution_function(n_tasks_list=[20, 30, 40, 50, 60, 70, 80, 90, 100], 
         print(f"Averaged MSE results (no outliers, n_tasks={n_tasks}):", averaged_results[n_tasks]["no_outliers"])
         print(f"Averaged MSE results (with outliers, n_tasks={n_tasks}):", averaged_results[n_tasks]["with_outliers"])
 
-    output_dir = '/scratch/ac10374/hpc505T/'
+    output_dir = ''
     os.makedirs(output_dir, exist_ok=True)
 
     task_id = os.environ.get("SLURM_ARRAY_TASK_ID", "0")  
