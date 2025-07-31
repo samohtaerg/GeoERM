@@ -93,17 +93,6 @@ def main_execution_function(n_tasks=50, n_samples=100, n_features=50, r=3, epsil
         print(f"Averaged MSE results (with outliers, h={h}):", averaged_results[h]["with_outliers"])
         print(f"Standard Errors (with outliers, h={h}):", standard_errors[h]["with_outliers"])
 
-        # Save averaged_results and standard_errors as JSON files
-#     import json
-# # Save the results to unique JSON files using the SLURM_PROCID or a custom identifier
-#     task_id = os.environ.get("SLURM_PROCID", "0")  # Use SLURM_PROCID if available, default to "0"
-#     with open(f'averaged_results_{task_id}.json', 'w') as f:
-#         json.dump(averaged_results, f, indent=4)
-#     with open(f'standard_errors_{task_id}.json', 'w') as f:
-#         json.dump(standard_errors, f, indent=4)
-
-#     return averaged_results, standard_errors
-
     import os
     import json
     import sys
