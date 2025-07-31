@@ -119,3 +119,10 @@ def main_execution_function(n_tasks=50, n_samples=100, n_features=30, r=3, epsil
     print(f"Results saved to {averaged_file_path} and {standard_errors_file_path}", flush=True)
 
     return averaged_results, standard_errors
+    
+if __name__ == "__main__":
+    models = ['GeoERM', 'pERM', 'ERM', 'single_task_LR', 'pooled_LR', 'spectral', 'MoM', 'AdaptRep', 'GLasso']
+    logging.basicConfig(level=logging.INFO)
+
+    # Call main_execution_function to get both averaged results and standard errors
+    averaged_results, standard_errors = main_execution_function(n_iterations=1)
