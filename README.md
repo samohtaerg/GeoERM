@@ -36,7 +36,7 @@ For the LibMTL experiments (Google Colab), `LibMTL` is installed automatically b
 
 ---
 
-## Real Data
+## Experiment Relication
 
 ### Experiment 1: HAR (Human Activity Recognition)
 
