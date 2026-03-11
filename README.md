@@ -44,7 +44,7 @@ For the LibMTL experiments (Google Colab), `LibMTL` is installed automatically b
 - Download the UCI HAR Dataset from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones) and place it under `Real Data/UCI HAR Dataset/`.
 - Data preprocessing: run `Real Data/Real Data 1 HAR/HAR data preprocessing/har_preprocessing.py` on your local machine or HPC, which produces `har_standardized.pkl`. Edit the `USER CONFIGURATION` paths at the top of the script before running.
 - Experiment: run `Real Data/Real Data 1 HAR/geoerm_har.py --r <rank>` with random seed 0–99 (via `$SLURM_ARRAY_TASK_ID`) and rank values `r = 5, 10, 15`. Edit the `USER CONFIGURATION` paths at the top of the script before running.
-- HPS+EW and HPS+PCGrad: run `Real Data/Real Data 1 HAR/geoerm_har_libmtl.py` on Google Colab with a T4 GPU. Upload `har_standardized.pkl` to Google Drive and update `DATA_PATH` and `OUTPUT_DIR` in the `__main__` block before running. The script runs both EW and PCGrad methods across seeds 0–99 automatically.
+- HPS+EW and HPS+PCGrad: run `Real Data/Real Data 1 HAR/geoerm_har_libmtl.py` with a T4 GPU. Put `har_standardized.pkl` in the correct direction and update `DATA_PATH` and `OUTPUT_DIR` in the `__main__` block before running. The script runs both EW and PCGrad methods across seeds 0–99 automatically.
 
 ### Experiment 2: MNIST Pairwise
 
@@ -55,7 +55,7 @@ For the LibMTL experiments (Google Colab), `LibMTL` is installed automatically b
   - `Real Data/Real Data 2 MNIST-C/MNIST-C data preprocessing/mnist_preprocessing_90t.py` → `mnist_pairwise_50_90t.pkl` (90 tasks, identity + brightness)
   - `Real Data/Real Data 2 MNIST-C/MNIST-C data preprocessing/mnist_preprocessing_92t_adv.py` → `mnist_pairwise_50_92t_adv.pkl` (92 tasks, 90 + 2 adversarial)
 - Experiment: run `Real Data/Real Data 2 MNIST-C/geoerm_mnist_pairwise.py --dataset <dataset> --r <rank>` with random seed 0–99 (via `$SLURM_ARRAY_TASK_ID`), dataset values `45t, 90t, 92t_adv`, and rank values `r = 10, 15, 20`. Edit the `USER CONFIGURATION` paths at the top of the script before running.
-- HPS+EW and HPS+PCGrad: run the corresponding Colab script on Google Colab with a T4 GPU. Upload the relevant `.pkl` file to Google Drive and update `DATA_PATH` and `OUTPUT_DIR` in the `__main__` block before running. Each script runs both EW and PCGrad methods across seeds 0–99 automatically.
+- HPS+EW and HPS+PCGrad: run the corresponding script with a T4 GPU. Upload the relevant `.pkl` file and update `DATA_PATH` and `OUTPUT_DIR` in the `__main__` block before running. Each script runs both EW and PCGrad methods across seeds 0–99 automatically.
   - `Real Data/Real Data 2 MNIST-C/geoerm_mnist_45t_libmtl.py` → dataset `45t`
   - `Real Data/Real Data 2 MNIST-C/geoerm_mnist_90t_libmtl.py` → dataset `90t`
   - `Real Data/Real Data 2 MNIST-C/geoerm_mnist_92t_libmtl.py` → dataset `92t_adv`
